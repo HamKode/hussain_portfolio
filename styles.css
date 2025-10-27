@@ -1693,7 +1693,7 @@ body {
     }
     
     .hero {
-        padding-top: 100px;
+        padding-top: 120px;
         padding-bottom: 50px;
         height: auto;
         min-height: 100vh;
@@ -1752,11 +1752,13 @@ body {
     .hero-visual {
         height: 250px;
         order: -1;
+        margin-top: 20px;
     }
     
     .hero-image-container {
-        width: 300px;
-        height: 300px;
+        width: 250px;
+        height: 250px;
+        margin-top: 0;
     }
     
 
