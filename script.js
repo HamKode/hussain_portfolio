@@ -11,6 +11,7 @@ const searchBox = document.getElementById('search-box');
 const searchInput = document.getElementById('search-input');
 const searchClose = document.getElementById('search-close');
 const whatsappFloat = document.getElementById('whatsapp-float');
+const cvDownload = document.getElementById('cv-download');
 
 // Theme Management
 const getSystemTheme = () => {
@@ -86,6 +87,25 @@ whatsappFloat.style.opacity = '0';
 whatsappFloat.style.transform = 'scale(0.8)';
 whatsappFloat.style.transition = 'all 0.3s ease';
 hideWhatsAppDuringPreloader();
+
+// CV Download Handler
+cvDownload.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = 'images/Hussain_Ahmed_Madni_CV.pdf';
+    link.download = 'Hussain_Ahmed_Madni_CV.pdf';
+    link.target = '_blank';
+    
+    // Append to body, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Show notification
+    showNotification('CV download started!', 'success');
+});
 
 // Preloader functionality
 window.addEventListener('load', () => {
