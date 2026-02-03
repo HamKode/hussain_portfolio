@@ -110,30 +110,42 @@ cvDownload.addEventListener('click', (e) => {
 
 // Chatbot Integration
 navLogoChatbot.addEventListener('click', () => {
-    // Open chatbot in new window
-    const chatbotUrl = 'https://cdn.botpress.cloud/webchat/v2.2/shareable.html?configUrl=https://files.bpcontent.cloud/2024/12/30/14/20241230140058-IXKQVHZX.json';
-    
-    window.open(
-        chatbotUrl,
-        'AI_Assistant',
-        'width=400,height=600,scrollbars=yes,resizable=yes,location=no,menubar=no,toolbar=no'
-    );
-    
-    showNotification('AI Assistant opened in new window!', 'success');
+    // Check if Botpress webchat is available
+    if (window.botpressWebChat) {
+        window.botpressWebChat.toggle();
+        showNotification('AI Assistant activated!', 'success');
+    } else {
+        showNotification('AI Assistant is loading...', 'info');
+        // Wait for Botpress to load
+        setTimeout(() => {
+            if (window.botpressWebChat) {
+                window.botpressWebChat.toggle();
+            }
+        }, 1000);
+    }
 });
 
-// Hide default Botpress widget when it loads
+// Hide default Botpress widget and configure
 window.addEventListener('load', () => {
-    const hideWidget = setInterval(() => {
-        const widget = document.querySelector('#bp-widget, [data-testid="webchat-button"], .bp-widget');
-        if (widget) {
-            widget.style.display = 'none';
-            clearInterval(hideWidget);
-        }
-    }, 500);
-    
-    // Stop checking after 10 seconds
-    setTimeout(() => clearInterval(hideWidget), 10000);
+    // Wait for Botpress to fully load
+    setTimeout(() => {
+        // Hide default widget
+        const hideWidget = () => {
+            const widgets = document.querySelectorAll('#bp-widget, [data-testid="webchat-button"], .bp-widget, .bpw-floating-button');
+            widgets.forEach(widget => {
+                if (widget) {
+                    widget.style.display = 'none';
+                }
+            });
+        };
+        
+        hideWidget();
+        
+        // Keep checking and hiding for 5 seconds
+        const interval = setInterval(hideWidget, 500);
+        setTimeout(() => clearInterval(interval), 5000);
+        
+    }, 2000);
 });
 
 // Preloader functionality
