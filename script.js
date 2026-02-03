@@ -110,49 +110,30 @@ cvDownload.addEventListener('click', (e) => {
 
 // Chatbot Integration
 navLogoChatbot.addEventListener('click', () => {
-    // Check if Botpress webchat is available
-    if (window.botpressWebChat) {
-        // Toggle chatbot
-        window.botpressWebChat.toggle();
-        
-        // Show notification on first click
-        if (!localStorage.getItem('chatbot-opened')) {
-            showNotification('AI Assistant activated! Ask me anything about my work.', 'success');
-            localStorage.setItem('chatbot-opened', 'true');
-        }
-    } else {
-        // Fallback if Botpress not loaded
-        showNotification('AI Assistant is loading... Please try again in a moment.', 'error');
-        
-        // Retry after 2 seconds
-        setTimeout(() => {
-            if (window.botpressWebChat) {
-                window.botpressWebChat.toggle();
-            }
-        }, 2000);
-    }
+    // Open chatbot in new window
+    const chatbotUrl = 'https://cdn.botpress.cloud/webchat/v2.2/shareable.html?configUrl=https://files.bpcontent.cloud/2024/12/30/14/20241230140058-IXKQVHZX.json';
+    
+    window.open(
+        chatbotUrl,
+        'AI_Assistant',
+        'width=400,height=600,scrollbars=yes,resizable=yes,location=no,menubar=no,toolbar=no'
+    );
+    
+    showNotification('AI Assistant opened in new window!', 'success');
 });
 
-// Initialize chatbot when page loads
+// Hide default Botpress widget when it loads
 window.addEventListener('load', () => {
-    // Wait for Botpress to load
-    setTimeout(() => {
-        if (window.botpressWebChat) {
-            // Hide default chatbot button if it exists
-            const defaultButton = document.querySelector('[data-testid="webchat-button"]');
-            if (defaultButton) {
-                defaultButton.style.display = 'none';
-            }
-            
-            // Configure chatbot
-            window.botpressWebChat.init({
-                hideWidget: true, // Hide default widget
-                showCloseButton: true,
-                showConversationsButton: false,
-                enableTranscriptDownload: false
-            });
+    const hideWidget = setInterval(() => {
+        const widget = document.querySelector('#bp-widget, [data-testid="webchat-button"], .bp-widget');
+        if (widget) {
+            widget.style.display = 'none';
+            clearInterval(hideWidget);
         }
-    }, 3000); // Wait 3 seconds for full load
+    }, 500);
+    
+    // Stop checking after 10 seconds
+    setTimeout(() => clearInterval(hideWidget), 10000);
 });
 
 // Preloader functionality
