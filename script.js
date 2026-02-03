@@ -110,42 +110,40 @@ cvDownload.addEventListener('click', (e) => {
 
 // Chatbot Integration
 navLogoChatbot.addEventListener('click', () => {
-    // Check if Botpress webchat is available
-    if (window.botpressWebChat) {
+    // Simple toggle for Botpress v3.5
+    if (typeof window.botpress !== 'undefined' && window.botpress.open) {
+        window.botpress.open();
+        showNotification('AI Assistant activated!', 'success');
+    } else if (typeof window.botpressWebChat !== 'undefined') {
         window.botpressWebChat.toggle();
         showNotification('AI Assistant activated!', 'success');
     } else {
         showNotification('AI Assistant is loading...', 'info');
-        // Wait for Botpress to load
-        setTimeout(() => {
-            if (window.botpressWebChat) {
-                window.botpressWebChat.toggle();
-            }
-        }, 1000);
     }
 });
 
-// Hide default Botpress widget and configure
+// Wait for Botpress to load and hide default widget
 window.addEventListener('load', () => {
-    // Wait for Botpress to fully load
-    setTimeout(() => {
-        // Hide default widget
-        const hideWidget = () => {
-            const widgets = document.querySelectorAll('#bp-widget, [data-testid="webchat-button"], .bp-widget, .bpw-floating-button');
-            widgets.forEach(widget => {
-                if (widget) {
-                    widget.style.display = 'none';
-                }
-            });
-        };
+    // Check for Botpress every 500ms for up to 10 seconds
+    let attempts = 0;
+    const maxAttempts = 20;
+    
+    const checkBotpress = setInterval(() => {
+        attempts++;
         
-        hideWidget();
+        // Hide any default widgets
+        const widgets = document.querySelectorAll(
+            '#bp-widget, [data-testid="webchat-button"], .bp-widget, .bpw-floating-button, #botpress-webchat'
+        );
+        widgets.forEach(widget => {
+            widget.style.display = 'none';
+        });
         
-        // Keep checking and hiding for 5 seconds
-        const interval = setInterval(hideWidget, 500);
-        setTimeout(() => clearInterval(interval), 5000);
-        
-    }, 2000);
+        // Stop checking after max attempts
+        if (attempts >= maxAttempts) {
+            clearInterval(checkBotpress);
+        }
+    }, 500);
 });
 
 // Preloader functionality
