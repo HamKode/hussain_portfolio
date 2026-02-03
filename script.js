@@ -12,6 +12,7 @@ const searchInput = document.getElementById('search-input');
 const searchClose = document.getElementById('search-close');
 const whatsappFloat = document.getElementById('whatsapp-float');
 const cvDownload = document.getElementById('cv-download');
+const navLogoChatbot = document.getElementById('nav-logo-chatbot');
 
 // Theme Management
 const getSystemTheme = () => {
@@ -105,6 +106,53 @@ cvDownload.addEventListener('click', (e) => {
     
     // Show notification
     showNotification('CV download started!', 'success');
+});
+
+// Chatbot Integration
+navLogoChatbot.addEventListener('click', () => {
+    // Check if Botpress webchat is available
+    if (window.botpressWebChat) {
+        // Toggle chatbot
+        window.botpressWebChat.toggle();
+        
+        // Show notification on first click
+        if (!localStorage.getItem('chatbot-opened')) {
+            showNotification('AI Assistant activated! Ask me anything about my work.', 'success');
+            localStorage.setItem('chatbot-opened', 'true');
+        }
+    } else {
+        // Fallback if Botpress not loaded
+        showNotification('AI Assistant is loading... Please try again in a moment.', 'error');
+        
+        // Retry after 2 seconds
+        setTimeout(() => {
+            if (window.botpressWebChat) {
+                window.botpressWebChat.toggle();
+            }
+        }, 2000);
+    }
+});
+
+// Initialize chatbot when page loads
+window.addEventListener('load', () => {
+    // Wait for Botpress to load
+    setTimeout(() => {
+        if (window.botpressWebChat) {
+            // Hide default chatbot button if it exists
+            const defaultButton = document.querySelector('[data-testid="webchat-button"]');
+            if (defaultButton) {
+                defaultButton.style.display = 'none';
+            }
+            
+            // Configure chatbot
+            window.botpressWebChat.init({
+                hideWidget: true, // Hide default widget
+                showCloseButton: true,
+                showConversationsButton: false,
+                enableTranscriptDownload: false
+            });
+        }
+    }, 3000); // Wait 3 seconds for full load
 });
 
 // Preloader functionality
