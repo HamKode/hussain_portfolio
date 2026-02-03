@@ -12,7 +12,6 @@ const searchInput = document.getElementById('search-input');
 const searchClose = document.getElementById('search-close');
 const whatsappFloat = document.getElementById('whatsapp-float');
 const cvDownload = document.getElementById('cv-download');
-const navLogoChatbot = document.getElementById('nav-logo-chatbot');
 
 // Theme Management
 const getSystemTheme = () => {
@@ -106,44 +105,6 @@ cvDownload.addEventListener('click', (e) => {
     
     // Show notification
     showNotification('CV download started!', 'success');
-});
-
-// Chatbot Integration
-navLogoChatbot.addEventListener('click', () => {
-    // Simple toggle for Botpress v3.5
-    if (typeof window.botpress !== 'undefined' && window.botpress.open) {
-        window.botpress.open();
-        showNotification('AI Assistant activated!', 'success');
-    } else if (typeof window.botpressWebChat !== 'undefined') {
-        window.botpressWebChat.toggle();
-        showNotification('AI Assistant activated!', 'success');
-    } else {
-        showNotification('AI Assistant is loading...', 'info');
-    }
-});
-
-// Wait for Botpress to load and hide default widget
-window.addEventListener('load', () => {
-    // Check for Botpress every 500ms for up to 10 seconds
-    let attempts = 0;
-    const maxAttempts = 20;
-    
-    const checkBotpress = setInterval(() => {
-        attempts++;
-        
-        // Hide any default widgets
-        const widgets = document.querySelectorAll(
-            '#bp-widget, [data-testid="webchat-button"], .bp-widget, .bpw-floating-button, #botpress-webchat'
-        );
-        widgets.forEach(widget => {
-            widget.style.display = 'none';
-        });
-        
-        // Stop checking after max attempts
-        if (attempts >= maxAttempts) {
-            clearInterval(checkBotpress);
-        }
-    }, 500);
 });
 
 // Preloader functionality
